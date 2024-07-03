@@ -5,7 +5,7 @@ checkLogin();
 
 // Use the $client to perform MongoDB operations
 $db = $client->selectDatabase('DavDatabase');
-$animeCollection = $db->selectCollection('data_anime');
+$animeCollection = $db->selectCollection('data_anime_limited');
 $ratingsCollection = $db->selectCollection('data_ratings');
 
 // Fetch all liked anime for the logged-in user

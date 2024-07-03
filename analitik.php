@@ -2,6 +2,59 @@
 include_once 'configs.php';
 include_once 'auth.php';
 checkLogin();
+
+// Use the $client to perform MongoDB operations
+$db = $client->selectDatabase('DavDatabase');
+$animeCollection = $db->selectCollection('data_anime_limited');
+
+// Fetch all anime data
+$animes = $animeCollection->find();
+
+$animeByYear = [];
+$genreCount = [];
+
+foreach ($animes as $anime) {
+  if (isset($anime['aired_from']) && strtotime($anime['aired_from']) !== false) {
+    $year = (new DateTime($anime['aired_from']))->format('Y');
+    if ($year > 2013) {
+      if (!isset($animeByYear[$year])) {
+        $animeByYear[$year] = 0;
+      }
+      $animeByYear[$year]++;
+    }
+  }
+
+  if (isset($anime['genres'])) {
+    // Convert genre string to array
+    $genres = json_decode(str_replace("'", '"', $anime['genres']));
+    foreach ($genres as $genre) {
+      if (!isset($genreCount[$genre])) {
+        $genreCount[$genre] = 0;
+      }
+      $genreCount[$genre]++;
+    }
+  }
+}
+
+$animeData = [];
+foreach ($animeByYear as $year => $count) {
+  $animeData[] = ['year' => $year, 'count' => $count];
+}
+
+// Sort data by year
+usort($animeData, function ($a, $b) {
+  return $a['year'] - $b['year'];
+});
+
+$genreData = [];
+foreach ($genreCount as $genre => $count) {
+  $genreData[] = ['genre' => $genre, 'count' => $count];
+}
+
+// Convert data to JSON for JavaScript consumption
+$animeDataJson = json_encode($animeData);
+$genreDataJson = json_encode($genreData);
+
 ?>
 
 <!doctype html>
@@ -18,6 +71,7 @@ checkLogin();
   <!-- Box Icon -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
@@ -68,17 +122,11 @@ checkLogin();
                 <span class="text nav-text">Favoritku</span>
               </a>
             </li>
-            <!-- <li class="nav-link">
-              <a href="/pengaturan">
-                <i class='bx bx-cog icon'></i>
-                <span class="text nav-text">Pengaturan</span>
-              </a>
-            </li> -->
           </ul>
         </div>
         <div class="bottom-content">
           <li>
-            <a href="#">
+            <a href="<?= BASE_URL ?>/logout.php">
               <i class='bx bx-log-out icon'></i>
               <span class="text nav-text">Logout</span>
             </a>
@@ -99,13 +147,115 @@ checkLogin();
     <section class="home flex-grow-1 p-3">
       <div class="container">
         <div class="row mt-4">
-          <h4>Analitik dan Trend Anime</h4>
-
+          <!-- <h4>Analitik dan Trend Anime</h4> -->
+          <div class="col-lg-6">
+            <h4>Total Anime per Tahun</h4>
+            <div id="line_chart"></div>
+          </div>
+          <div class="col-lg-6">
+            <h4>Distribusi anime tiap genre</h4>
+            <div id="pie_chart"></div>
+          </div>
         </div>
       </div>
     </section>
   </div>
   <script src="js/script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const animeData = <?= $animeDataJson; ?>;
+      const genreData = <?= $genreDataJson; ?>;
+
+      // Line Chart
+      const margin = {
+        top: 20,
+        right: 30,
+        bottom: 30,
+        left: 40
+      };
+      const width = 600 - margin.left - margin.right;
+      const height = 500 - margin.top - margin.bottom;
+
+      const svgLine = d3.select("#line_chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const x = d3.scalePoint()
+        .domain(animeData.map(d => d.year))
+        .range([0, width]);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(animeData, d => d.count)])
+        .nice()
+        .range([height, 0]);
+
+      const line = d3.line()
+        .x(d => x(d.year))
+        .y(d => y(d.count));
+
+      svgLine.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x));
+
+      svgLine.append("g")
+        .attr("class", "y-axis")
+        .call(d3.axisLeft(y));
+
+      svgLine.append("path")
+        .datum(animeData)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("d", line);
+
+      svgLine.selectAll(".dot")
+        .data(animeData)
+        .enter().append("circle")
+        .attr("class", "dot")
+        .attr("cx", d => x(d.year))
+        .attr("cy", d => y(d.count))
+        .attr("r", 5)
+        .attr("fill", "steelblue");
+
+      // Pie Chart
+      const svgPie = d3.select("#pie_chart").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", `translate(${width / 4},${height / 2})`);
+
+      const pie = d3.pie()
+        .value(d => d.count);
+
+      const arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(Math.min(width / 2, height / 2) - 1);
+
+      const arcLabel = d3.arc()
+        .innerRadius(Math.min(width, height / 2) - 40)
+        .outerRadius(Math.min(width, height / 2) - 40);
+
+      const arcs = pie(genreData);
+
+      svgPie.selectAll("path")
+        .data(arcs)
+        .enter().append("path")
+        .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
+        .attr("stroke", "white")
+        .attr("d", arc);
+      svgPie.selectAll("text")
+        .data(arcs)
+        .enter().append("text")
+        .attr("transform", d => `translate(${arcLabel.centroid(d)})`)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "10px")
+        .text(d => `${d.data.genre} (${d.data.count})`);
+    });
+  </script>
 </body>
 
 </html>

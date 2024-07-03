@@ -5,7 +5,7 @@ checkLogin();
 
 // Use the $client to perform MongoDB operations
 $db = $client->selectDatabase('DavDatabase');
-$collection = $db->selectCollection('data_anime');
+$collection = $db->selectCollection('data_anime_limited');
 
 // Search functionality
 $search_query = isset($_GET['search']) ? $_GET['search'] : '';

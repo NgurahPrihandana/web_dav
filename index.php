@@ -100,7 +100,7 @@ checkLogin();
       <div class="container">
         <div class="row mt-4">
           <h4>Anime Tailored Based on People Who just Like you</h4>
-          <div class="col-lg-3">
+          <!-- <div class="col-lg-3">
             <div class="card mt-2" style="width: 18rem;">
               <img src="..." class="card-img-top" alt="...">
               <div class="card-body">
@@ -109,46 +109,13 @@ checkLogin();
                 <a href="anime/detail/" class="btn btn-primary">Go somewhere</a>
               </div>
             </div>
-          </div>
-
-          <div class="col-lg-3">
-            <div class="card mt-2" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3">
-            <div class="card mt-2" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3">
-            <div class="card mt-2" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="row mt-4">
-          <h4>Anime that Similar to What You Like</h4>
+          <!-- <h4>Anime that Similar to What You Like</h4> -->
 
-          <div class="col-lg-3">
+          <!-- <div class="col-lg-3">
             <div class="card mt-2" style="width: 18rem;">
               <img src="..." class="card-img-top" alt="...">
               <div class="card-body">
@@ -157,40 +124,8 @@ checkLogin();
                 <a href="#" class="btn btn-primary">Go somewhere</a>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="col-lg-3">
-            <div class="card mt-2" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3">
-            <div class="card mt-2" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-3">
-            <div class="card mt-2" style="width: 18rem;">
-              <img src="..." class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

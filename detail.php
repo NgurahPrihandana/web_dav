@@ -5,7 +5,7 @@ checkLogin();
 
 // Use the $client to perform MongoDB operations
 $db = $client->selectDatabase('DavDatabase');
-$collection = $db->selectCollection('data_anime');
+$collection = $db->selectCollection('data_anime_limited');
 $ratings_collection = $db->selectCollection('data_ratings');
 
 // Get the ID from the URL
